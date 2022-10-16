@@ -77,11 +77,11 @@ const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return next(new ErrorUnauthorized('Неверно ведена почта или пароль'));
+      return next(new ErrorUnauthorized('Неверно введена почта или пароль'));
     }
     const userValid = await bcrypt.compare(password, user.password);
     if (!userValid) {
-      return next(new ErrorUnauthorized('Неверно ведена почта или пароль'));
+      return next(new ErrorUnauthorized('Неверно введена почта или пароль'));
     }
 
     const token = jwt.sign({

@@ -48,12 +48,12 @@ const deleteMovie = async (req, res, next) => {
   const owner = req.user._id;
   const { movieId } = req.params;
   try {
-    const movie = await Movie.findByIdAndRemove(movieId);
+    const movie = await Movie.findById(movieId);
     if (!movie) {
       return next(new ErrorNotFound('Указанный фильм не найден'));
     }
     if (owner !== movie.owner.toString()) {
-      return next(new ErrorForbidden('Вы не можете удалить чужую карточку'));
+      return next(new ErrorForbidden('Вы не можете удалить чужой фильм'));
     }
     await Movie.findByIdAndRemove(movieId);
     return res.send({ message: 'Указанный фильм удален' });
