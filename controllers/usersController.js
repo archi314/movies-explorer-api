@@ -89,14 +89,7 @@ const login = async (req, res, next) => {
     }, NODE_ENV === 'production' ? JWT_SECRET : 'SECRET');
     res.cookie('jwt', token, {
       maxAge: 3600000,
-      domain: 'artemstukalov.nomoredomains.icu',
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-    });
-    res.cookie('jwt', token, {
-      maxAge: 3600000,
-      domain: 'api.artemstukalov.nomoredomains.icu',
+      domain: 'artemst.nomoredomains.icu',
       httpOnly: true,
       sameSite: 'none',
       secure: true,

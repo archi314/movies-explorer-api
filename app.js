@@ -24,7 +24,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ['https://artemstukalov.nomoredomains.icu', 'https://api.artemstukalov.nomoredomains.icu'], // было 3000
+    origin: ['https://artemst.nomoredomains.icu'], // было 3000
     credentials: true,
   }),
 );
