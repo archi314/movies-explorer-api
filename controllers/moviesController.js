@@ -17,7 +17,7 @@ const getMovies = async (req, res, next) => {
   try {
     const owner = req.user._id;
     const movies = await Movie.find({ owner });
-    if (!movies) {
+    if (!movies || !movies.length) {
       return next(new ErrorNotFound(NOT_FOUND_MOVIE_ERR_TEXT));
     }
     return res.send(movies);
