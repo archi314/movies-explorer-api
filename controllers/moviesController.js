@@ -10,38 +10,25 @@ const {
   SERVER_ERR_TEXT,
   NOT_FOUND_MOVIE_ERR_TEXT,
   REMOVE_PROHIBIHION_ERR_TEXT,
+  MOVIE_REMOVE_SUCCESS_TEXT,
 } = require('../utils/constants');
 
 const getMovies = async (req, res, next) => {
   try {
-    const movies = await Movie.find({});
-    return res.send(movies.reverse());
+    const owner = req.user._id;
+    const movies = await Movie.find({ owner });
+    if (!movies) {
+      return next(new ErrorNotFound(NOT_FOUND_MOVIE_ERR_TEXT));
+    }
+    return res.send(movies);
   } catch (err) {
     return next(new ErrorServer(SERVER_ERR_TEXT));
   }
 };
 
 const createMovie = async (req, res, next) => {
-  const owner = req.user._id;
-  const {
-    country, director, duration, year, description,
-    image, trailerLink, thumbnail, movieId, nameRU, nameEN,
-  } = req.body;
   try {
-    const movie = await Movie.create({
-      country,
-      director,
-      duration,
-      year,
-      description,
-      image,
-      trailerLink,
-      thumbnail,
-      movieId,
-      nameRU,
-      nameEN,
-      owner,
-    });
+    const movie = await Movie.create({ ...req.body, owner: req.user._id });
     return res.send(movie);
   } catch (err) {
     if (err.name === 'ValidationError') {
@@ -63,7 +50,7 @@ const deleteMovie = async (req, res, next) => {
       return next(new ErrorForbidden(REMOVE_PROHIBIHION_ERR_TEXT));
     }
     await Movie.findByIdAndRemove(movieId);
-    return res.send({ message: 'Указанный фильм удален' });
+    return res.send({ message: MOVIE_REMOVE_SUCCESS_TEXT });
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new ErrorBadRequest(BAD_REQUEST_ERR_TEXT));

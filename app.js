@@ -10,6 +10,7 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 
 const router = require('./routes/index');
+const errorServer = require('./middlewares/errors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const rateLimiter = require('./middlewares/rateLimiter');
@@ -42,12 +43,7 @@ app.use('/', router);
 app.use(errorLogger);
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  const message = statusCode === 500 ? 'Ошибка на сервере' : err.message;
-  res.status(statusCode).send({ message });
-  next();
-});
+app.use(errorServer);
 
 async function main() {
   try {

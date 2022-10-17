@@ -18,6 +18,7 @@ const {
   SERVER_ERR_TEXT,
   NOT_FOUND_USER_EMAIL_ERR_TEXT,
   UNAUTHORIZED_ERR_TEXT,
+  USER_SIGNOUT_SUCCESS_TEXT,
 } = require('../utils/constants');
 
 const createUser = async (req, res, next) => {
@@ -105,7 +106,7 @@ const login = async (req, res, next) => {
       sameSite: 'none',
       secure: true,
     });
-    return res.status(200).send(user.toJSON());
+    return res.status(200).send(user);
   } catch (err) {
     return next(new ErrorServer(SERVER_ERR_TEXT));
   }
@@ -114,7 +115,7 @@ const login = async (req, res, next) => {
 const signout = (req, res, next) => {
   try {
     res.clearCookie('jwt');
-    return res.status(200).send({ message: 'Выполнен выход' });
+    return res.status(200).send({ message: USER_SIGNOUT_SUCCESS_TEXT });
   } catch (err) {
     return next(new ErrorServer(SERVER_ERR_TEXT));
   }
