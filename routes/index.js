@@ -11,14 +11,14 @@ const {
 
 const { validateSignup, validateLogin } = require('../middlewares/validation');
 
-router.get('/crash-test', () => {
+router.get('/api/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
 
-router.post('/signup', validateSignup, createUser);
-router.post('/signin', validateLogin, login);
+router.post('/api/signup', validateSignup, createUser);
+router.post('/api/signin', validateLogin, login);
 
 router.use(auth);
 

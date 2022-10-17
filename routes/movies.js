@@ -10,8 +10,8 @@ const {
 } = require('../controllers/moviesController');
 
 moviesRoutes.use(express.json());
-moviesRoutes.get('/movies', getMovies);
-moviesRoutes.post('/movies', validateCreateMovie, createMovie);
-moviesRoutes.delete('/movies/:movieId', validateDeleteMovie, deleteMovie);
+moviesRoutes.get('/api/movies', getMovies);
+moviesRoutes.post('/api/movies', validateCreateMovie, createMovie);
+moviesRoutes.delete('/api/movies/:movieId', validateDeleteMovie, deleteMovie);
 
 module.exports = moviesRoutes;

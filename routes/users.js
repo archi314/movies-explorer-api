@@ -10,7 +10,7 @@ const {
 
 userRoutes.use(express.json());
 
-userRoutes.get('/users/me', getUserProfile);
-userRoutes.patch('/users/me', validateUpdateUserProfile, updateUserProfile);
+userRoutes.get('/api/users/me', getUserProfile);
+userRoutes.patch('/api/users/me', validateUpdateUserProfile, updateUserProfile);
 
 module.exports = userRoutes;

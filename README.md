@@ -2,4 +2,4 @@
 
 IP 51.250.24.228
 
-Backend https://artemst.nomoredomains.icu/
+Backend https://artemst.nomoredomains.icu/api/
