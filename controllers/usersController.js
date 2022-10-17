@@ -12,6 +12,14 @@ const ErrorServer = require('../errors/ErrorServer'); /** Ошибка 500. */
 const ErrorConflict = require('../errors/ErrorConflict'); /** Ошибка 409. */
 const ErrorUnauthorized = require('../errors/ErrorUnauthorized'); /** Ошибка 401. */
 
+const {
+  BAD_REQUEST_ERR_TEXT,
+  NOT_FOUND_USER_ERR_TEXT,
+  SERVER_ERR_TEXT,
+  NOT_FOUND_USER_EMAIL_ERR_TEXT,
+  UNAUTHORIZED_ERR_TEXT,
+} = require('../utils/constants');
+
 const createUser = async (req, res, next) => {
   const {
     name,
@@ -28,12 +36,12 @@ const createUser = async (req, res, next) => {
     return res.send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return next(new ErrorBadRequest('Переданы невалидные данные'));
+      return next(new ErrorBadRequest(BAD_REQUEST_ERR_TEXT));
     }
     if (err.code === 11000) {
-      return next(new ErrorConflict('Пользователь с указанным email не найден'));
+      return next(new ErrorConflict(NOT_FOUND_USER_EMAIL_ERR_TEXT));
     }
-    return next(new ErrorServer('Ошибка на сервере'));
+    return next(new ErrorServer(SERVER_ERR_TEXT));
   }
 };
 
@@ -42,11 +50,11 @@ const getUserProfile = async (req, res, next) => {
     const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
-      return next(new ErrorNotFound('Указанный пользователь не найден'));
+      return next(new ErrorNotFound(NOT_FOUND_USER_ERR_TEXT));
     }
     return res.send(user);
   } catch (err) {
-    return next(new ErrorServer('Ошибка на сервере'));
+    return next(new ErrorServer(SERVER_ERR_TEXT));
   }
 };
 
@@ -60,14 +68,17 @@ const updateUserProfile = async (req, res, next) => {
       { new: true, runValidators: true },
     );
     if (!user) {
-      return next(new ErrorNotFound('Указанный пользователь не найден'));
+      return next(new ErrorNotFound(NOT_FOUND_USER_ERR_TEXT));
     }
     return res.send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return next(new ErrorBadRequest('Переданы невалидные данные'));
+      return next(new ErrorBadRequest(BAD_REQUEST_ERR_TEXT));
     }
-    return next(new ErrorServer('Ошибка на сервере'));
+    if (err.code === 11000) {
+      return next(new ErrorConflict(NOT_FOUND_USER_EMAIL_ERR_TEXT));
+    }
+    return next(new ErrorServer(SERVER_ERR_TEXT));
   }
 };
 
@@ -77,11 +88,11 @@ const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return next(new ErrorUnauthorized('Неверно введена почта или пароль'));
+      return next(new ErrorUnauthorized(UNAUTHORIZED_ERR_TEXT));
     }
     const userValid = await bcrypt.compare(password, user.password);
     if (!userValid) {
-      return next(new ErrorUnauthorized('Неверно введена почта или пароль'));
+      return next(new ErrorUnauthorized(UNAUTHORIZED_ERR_TEXT));
     }
 
     const token = jwt.sign({
@@ -96,7 +107,7 @@ const login = async (req, res, next) => {
     });
     return res.status(200).send(user.toJSON());
   } catch (err) {
-    return next(new ErrorServer('Ошибка на сервере'));
+    return next(new ErrorServer(SERVER_ERR_TEXT));
   }
 };
 
@@ -105,7 +116,7 @@ const signout = (req, res, next) => {
     res.clearCookie('jwt');
     return res.status(200).send({ message: 'Выполнен выход' });
   } catch (err) {
-    return next(new ErrorServer('Ошибка на сервере'));
+    return next(new ErrorServer(SERVER_ERR_TEXT));
   }
 };
 

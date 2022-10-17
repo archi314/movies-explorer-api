@@ -16,6 +16,8 @@ const rateLimiter = require('./middlewares/rateLimiter');
 
 const { PORT = 3000 } = process.env; // было 4000
 
+const { NODE_ENV, MONGO_DB } = process.env;
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,7 +26,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ['https://artemst.nomoredomains.icu'], // было 3000
+    origin: ['https://artemst.nomoredomains.icu/api'], // было 3000
     credentials: true,
   }),
 );
@@ -49,7 +51,7 @@ app.use((err, req, res, next) => {
 
 async function main() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+    await mongoose.connect(NODE_ENV === 'production' ? MONGO_DB : 'mongodb://localhost:27017/moviesdb', {
       useNewUrlParser: true,
       useUnifiedTopology: false,
     });
