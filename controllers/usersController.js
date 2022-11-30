@@ -106,7 +106,7 @@ const login = async (req, res, next) => {
       sameSite: 'none',
       secure: true,
     });
-    return res.status(200).send(user);
+    return res.status(200).send({ user: user.toJSON(), token });
   } catch (err) {
     return next(new ErrorServer(SERVER_ERR_TEXT));
   }

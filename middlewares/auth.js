@@ -11,7 +11,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'SECRET');
   } catch (err) {
-    throw new ErrorUnauthorized('Ошибка при авторизации');
+    throw new ErrorUnauthorized(token);
   }
 
   req.user = payload;

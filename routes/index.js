@@ -22,7 +22,7 @@ router.post('/api/signin', validateLogin, login);
 
 router.use(auth);
 
-router.get('/signout', signout);
+router.get('/api/signout', signout);
 router.use(require('./users'));
 router.use(require('./movies'));
 

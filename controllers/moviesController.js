@@ -42,14 +42,14 @@ const deleteMovie = async (req, res, next) => {
   const owner = req.user._id;
   const { movieId } = req.params;
   try {
-    const movie = await Movie.findById(movieId);
-    if (!movie) {
+    const movies = await Movie.find({ owner, movieId });
+    if (!movies.length) {
       return next(new ErrorNotFound(NOT_FOUND_MOVIE_ERR_TEXT));
     }
-    if (owner !== movie.owner.toString()) {
+    if (owner !== movies[0].owner.toString()) {
       return next(new ErrorForbidden(REMOVE_PROHIBIHION_ERR_TEXT));
     }
-    await Movie.findByIdAndRemove(movieId);
+    await Movie.findByIdAndRemove(movies[0].id);
     return res.send({ message: MOVIE_REMOVE_SUCCESS_TEXT });
   } catch (err) {
     if (err.name === 'CastError') {
