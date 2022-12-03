@@ -99,13 +99,15 @@ const login = async (req, res, next) => {
     const token = jwt.sign({
       _id: user._id,
     }, NODE_ENV === 'production' ? JWT_SECRET : 'SECRET');
-    res.cookie('jwt', token, {
-      maxAge: 3600000,
-      domain: 'artemst.nomoredomains.icu',
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-    });
+    if (token && token.length) {
+      res.cookie('jwt', token, {
+        maxAge: 3600000,
+        domain: 'artemst.nomoredomains.icu', // localhost
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      });
+    }
     return res.status(200).send({ user: user.toJSON(), token });
   } catch (err) {
     return next(new ErrorServer(SERVER_ERR_TEXT));

@@ -19,10 +19,10 @@ router.get('/api/crash-test', () => {
 
 router.post('/api/signup', validateSignup, createUser);
 router.post('/api/signin', validateLogin, login);
+router.get('/api/signout', signout);
 
 router.use(auth);
 
-router.get('/api/signout', signout);
 router.use(require('./users'));
 router.use(require('./movies'));
 
